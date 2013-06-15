@@ -52,6 +52,11 @@
   [size]
   (CommonOps/identity size))
 
+(defn diag
+  "Create a diagonal matrix."
+  [& data]
+  (CommonOps/diag (double-array data)))
+
 ;;
 ;; Matrix operations
 ;;
@@ -155,3 +160,7 @@
   "Compute the determinant of the matrix M."
   [M]
   (CommonOps/det M))
+
+(defn sum
+  [M]
+  (CommonOps/elementSum M))
