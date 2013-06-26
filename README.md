@@ -1,6 +1,6 @@
-# clj-ejml
+# cerebro
 
-EJML wrapper for Clojure.
+Linear algebra library for machine learning in Clojure based on EJML.
 
 ## Usage
 
