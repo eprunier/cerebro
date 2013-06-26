@@ -1,4 +1,4 @@
-(defproject clj-ejml "0.1.0-SNAPSHOT"
+(defproject cerebro "0.1.0-SNAPSHOT"
   :description "Linear algebra library for machine learning in Clojure"
   :url "http://github.com/eprunier/cerebro"
   :license {:name "Eclipse Public License"
