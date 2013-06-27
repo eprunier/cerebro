@@ -154,7 +154,7 @@
   "Compute the standard deviation for each column
    and return them in a row vector.
 
-   std(M) => sqrt(1 / (n - 1) * sum((x - mean))^2)"
+   std(M) => sqrt(1 / (n - 1) * sum((x - mean)^2))"
   [M]
   (let [R (core/zeros 1 (.getNumCols M))
         nb-rows (.getNumRows M)

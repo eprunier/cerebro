@@ -66,7 +66,7 @@
   (vec (.getData M)))
 
 (defn clj->matrix
-  "Replace M with the clojure vector v."
+  "Replace the content of M with the clojure vector v."
   [M v]
   (.setData M (double-array v)))
 
