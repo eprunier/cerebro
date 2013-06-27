@@ -1,4 +1,5 @@
 (ns cerebro.core
+  (:refer-clojure :exclude [get set])
   (:import [org.ejml.ops CommonOps]
            [org.ejml.data DenseMatrix64F]))
 
@@ -6,12 +7,12 @@
 ;; Matrix creation
 ;;
 (defn matrix
-  "Create a new matrix.
+  "Creates a new matrix.
 
-   Create a 2 x 3 matrix :
+   Creates a 2 x 3 matrix :
    (matrix [[1 2 3] [4 5 6]])
 
-   Create the same 2 x 3 matrix :
+   Creates the same 2 x 3 matrix :
    (matrix [1 2 3 4 5 6] 2)"
   ([data]
      (->> data
@@ -23,24 +24,24 @@
        (DenseMatrix64F. num-rows cols true (double-array data)))))
 
 (defn row-vector
-  "Create a row vector."
+  "Creates a row vector."
   [data]
   (matrix data 1))
 
 (defn col-vector
-  "Create a column vector."
+  "Creates a column vector."
   [data]
   (matrix data (count data)))
 
 (defn zeros
-  "Create a matrix with all elements set to 0."
+  "Creates a matrix with all elements set to 0."
   ([size]
      (zeros (first size) (second size)))
   ([rows cols]
      (DenseMatrix64F. rows cols)))
 
 (defn ones
-  "Create a matrix with all elements set to 1."
+  "Creates a matrix with all elements set to 1."
   ([size]
      (ones (first size) (second size)))
   ([rows cols]
@@ -48,20 +49,25 @@
        (matrix (take rows (repeat row))))))
 
 (defn eye
-  "Return an identity matrix."
+  "Returns an identity matrix."
   [size]
   (CommonOps/identity size))
 
 (defn diag
-  "Create a diagonal matrix."
+  "Creates a diagonal matrix."
   [& data]
   (CommonOps/diag (double-array data)))
+
+(defn clone
+  "Duplicates the matrix M."
+  [M]
+  (.copy M))
 
 ;;
 ;; Convertion functions
 ;;
 (defn matrix->clj
-  "Convert a matrix to a clojure vector."
+  "Converts a matrix to a clojure vector."
   [M]
   (vec (.getData M)))
 
@@ -74,27 +80,65 @@
 ;; Informations on matrix
 ;;
 (defn size
-  "Return the number of rows and columns in matrix M."
+  "Returns the number of rows and columns in matrix M."
   [M]
   [(.getNumRows M)
    (.getNumCols M)])
 
 (defn num-rows
+  "Returns the number of rows of the matrix."
   [M]
   (.getNumRows M))
 
 (defn num-cols
+  "Returns the number of columns of the matrix."
   [M]
   (.getNumCols M))
 
+;;
+;; Content access
+;;
 (defn row
-  [M i]
+  "Returns the specified row."
+  [i M]
   (CommonOps/extract M i (+ 1 i) 0 (num-cols M)))
 
 (defn rows
+  "Returns a vector of single row matrices representing each rows."
   [M]
-  (let [R (zeros (size M))]
-    (->> M
-         matrix->clj
-         (partition (num-cols M))
-         (map row-vector))))
+  (->> M
+       matrix->clj
+       (partition (num-cols M))
+       (map row-vector)))
+
+(defn col
+  "Returns the specified column."
+  [i M]
+  (CommonOps/extract M 0 (num-rows M) i (+ 1 i)))
+
+(defn cols
+  "Returns a vector of single row matrices representing each columns."
+  [M]
+  (let [R (.copy M)]
+    (CommonOps/transpose R)
+    (rows R)))
+
+(defn set
+  "Sets the value for the given row and col and returns the new matrix.
+   M is not modified."
+  [M row col value]
+  (let [R (.copy M)]
+    (.set R row col value)
+    R))
+
+(defn set!
+  "Sets the value for the given row and col in M and returns it.
+   M is modified."
+  [M row col value]
+  (.set M row col value)
+  M)
+
+(defn get
+  "Returns an element of the matrix."
+  [M row col]
+  (.get M row col))
