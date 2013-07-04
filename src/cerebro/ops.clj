@@ -92,8 +92,12 @@
   "Divides element wise matrix A by matrix B."
   [A B]
   (let [R (m/zeros (m/size A))]
-    (CommonOps/elementDiv A B R)
-    R))
+    (if (and (> (m/num-rows A) 1)
+             (= 1 (m/num-rows B)))
+      (m/apply-to-rows A #(ediv % B))
+      (do
+        (CommonOps/elementDiv A B R)
+        R))))
 
 (defn trace
   "Computes the trace of the matrix M."
