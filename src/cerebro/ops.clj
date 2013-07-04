@@ -35,18 +35,28 @@
     R))
 
 (defn add
-  "Adds matrix A and matrix B."
+  "Adds matrix A and matrix B. If matrix B is a single row matrix
+   then adds B to each row of matrix A."
   [A B]
   (let [R (m/zeros (m/size A))]
-    (CommonOps/add A B R)
-    R))
+    (if (and (> (m/num-rows A) 1)
+             (= 1 (m/num-rows B)))
+      (m/apply-to-rows A #(add % B))
+      (do
+        (CommonOps/add A B R)
+        R))))
 
 (defn sub
-  "Subtracts matrix B from matrix A."
+  "Subtracts matrix B from matrix A. If matrix B is a single row
+   matrix then subtracts B from each row of matrix A."
   [A B]
   (let [R (m/zeros (m/size A))]
-    (CommonOps/sub A B R)
-    R))
+    (if (and (> (m/num-rows A) 1)
+             (= 1 (m/num-rows B)))
+      (m/apply-to-rows A #(sub % B))
+      (do
+        (CommonOps/sub A B R)
+        R))))
 
 (defn mul
   "Multiplies matrix A by matrix B."
