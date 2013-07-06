@@ -1,5 +1,5 @@
 (ns cerebro.matrix
-  (:refer-clojure :exclude [get set])
+  (:refer-clojure :exclude [get set vector?])
   (:import [org.ejml.data DenseMatrix64F]
            [org.ejml.ops CommonOps MatrixIO MatrixVisualization MatrixFeatures]))
 
@@ -62,6 +62,10 @@
   "Duplicates the matrix M."
   [M]
   (.copy M))
+
+(defn extract
+  [M start-row end-row start-col end-col]
+  (CommonOps/extract M start-row end-row start-col end-col))
 
 ;;
 ;; Convertion functions

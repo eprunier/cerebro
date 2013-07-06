@@ -150,7 +150,7 @@
         col-means (mean M)]
     (-> (m/apply-to-rows M #(square (sub % col-means)))
         sum
-        (scale (/ 1 (- nb-rows 1)))
+        (mul (/ 1 (- nb-rows 1)))
         sqrt)))
 
 (defn scale
