@@ -1,5 +1,5 @@
-(ns cerebro.ops
-  (:require [cerebro.core :as m])
+(ns cerebro.matrix.ops
+  (:require [cerebro.matrix :as m])
   (:import [org.ejml.ops CommonOps]
            [org.ejml.data DenseMatrix64F]))
 
@@ -13,7 +13,7 @@
     (CommonOps/transpose R)
     R))
 
-(defn negative
+(defn minus
   "Changes the sign of all elements."
   [M]
   (let [R (.copy M)]
@@ -61,24 +61,19 @@
 (defn mul
   "Multiplies matrix A by matrix B."
   [A B]
-  (let [result-rows (-> A m/size first)
-        result-cols (-> B m/size second)
-        R (m/zeros result-rows result-cols)]
-    (CommonOps/mult A B R)
-    R))
+  (if (m/matrix? B)
+    (let [R (m/zeros (m/num-rows A) (m/num-cols B))]
+      (CommonOps/mult A B R)
+      R)
+    (let [R (m/zeros (m/size A))]
+      (CommonOps/scale B A R)
+      R)))
 
 (defn emul
   "Multiplies element wise matrix A by matrix B."
   [A B]
   (let [R (m/zeros (m/size A))]
     (CommonOps/elementMult A B R)
-    R))
-
-(defn scale
-  "Multiplies all elements of matrix M by a scalar n."
-  [M n]
-  (let [R (m/zeros (m/size M))]
-    (CommonOps/scale n M R)
     R))
 
 (defn div
@@ -157,3 +152,41 @@
         sum
         (scale (/ 1 (- nb-rows 1)))
         sqrt)))
+
+(defn scale
+  "Scales matrix data based on standard derivation: (X - means) / std
+   and returns a clojure map containing:
+      :X = normalized X
+      :mu = means
+      :sigma = standard derivation
+   X is not modified."
+  [X]
+  (let [mu (mean X)
+        sigma (std X)
+        X_norm (ediv (sub X mu)
+                     sigma)]
+    {:X X_norm :mu mu :sigma sigma}))
+
+(defn find-in-cols
+  [M f]
+  (let [cols (m/cols M)
+        values (->> cols
+                  (map f)
+                  m/row-vector)
+        indexes (-> (map #(.indexOf (m/matrix->clj %) %2) 
+                         cols (m/matrix->clj values))
+                    vec
+                    m/row-vector)]
+    [values, indexes]))
+
+(defn min
+  "Find the minimum value and its index in each columns and returns 
+   a Clojure vector containing 2 single row matrices [values indexes]."
+  [M]
+  (find-in-cols M #(CommonOps/elementMin %)))
+
+(defn max
+  "Find the maximum value and its index in each columns and returns 
+   a Clojure vector containing 2 single row matrices [values indexes]."
+  [M]
+  (find-in-cols M #(CommonOps/elementMax %)))

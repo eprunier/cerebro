@@ -1,7 +1,7 @@
-(ns cerebro.core
+(ns cerebro.matrix
   (:refer-clojure :exclude [get set])
-  (:import [org.ejml.ops CommonOps]
-           [org.ejml.data DenseMatrix64F]))
+  (:import [org.ejml.data DenseMatrix64F]
+           [org.ejml.ops CommonOps MatrixIO MatrixVisualization MatrixFeatures]))
 
 ;;
 ;; Matrix creation
@@ -79,6 +79,16 @@
 ;;
 ;; Informations on matrix
 ;;
+(defn matrix?
+  "Tests if M is a matrix."
+  [M]
+  (instance? DenseMatrix64F M))
+
+(defn vector?
+  "Tests if M is a vector."
+  [M]
+  (MatrixFeatures/isVector M))
+
 (defn size
   "Returns the number of rows and columns in matrix M."
   [M]
@@ -156,3 +166,8 @@
   [M f]
   (->> (map f (rows M))
        (apply merge-rows)))
+
+(defn show
+  "Opens a windows showing the matrix's state."
+  [M & [title]]
+  (MatrixVisualization/show M title))
