@@ -1,6 +1,5 @@
-(ns cerebro.io
-  (:require [clojure.data.csv :as csv])
-  (:import [org.ejml.ops MatrixIO]))
+(ns cerebro.csv
+  (:require [clojure.data.csv :as csv]))
 
 (defn- as-double
   "Converts a string value to a double"
@@ -25,13 +24,3 @@
           csv/read-csv
           (filter not-empty-line?)
           (map #(map as-double %)))))
-
-(defn save-matrix
-  "Save a matrix to a binary file."
-  [M file]
-  (MatrixIO/saveBin M file))
-
-(defn load-matrix
-  "Load a matrix from a binary file."
-  [file]
-  (MatrixIO/loadBin file))

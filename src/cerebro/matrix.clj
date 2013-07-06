@@ -1,7 +1,21 @@
 (ns cerebro.matrix
   (:refer-clojure :exclude [get set vector?])
-  (:import [org.ejml.data DenseMatrix64F]
+  (:import [org.ejml.ops MatrixIO]
+           [org.ejml.data DenseMatrix64F]
            [org.ejml.ops CommonOps MatrixIO MatrixVisualization MatrixFeatures]))
+
+;;
+;; Matrix IO
+;;
+(defn save-matrix
+  "Save a matrix to a binary file."
+  [M file]
+  (MatrixIO/saveBin M file))
+
+(defn load-matrix
+  "Load a matrix from a binary file."
+  [file]
+  (MatrixIO/loadBin file))
 
 ;;
 ;; Matrix creation
