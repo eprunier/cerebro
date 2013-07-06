@@ -166,8 +166,3 @@
   [M f]
   (->> (map f (rows M))
        (apply merge-rows)))
-
-(defn show
-  "Opens a windows showing the matrix's state."
-  [M & [title]]
-  (MatrixVisualization/show M title))
