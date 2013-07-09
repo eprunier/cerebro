@@ -1,6 +1,6 @@
-(ns cerebro.matrix.ops
+(ns cerebro.ops
   (:refer-clojure :exclude [max min])
-  (:require [cerebro.matrix :as m])
+  (:require [cerebro.core :as m])
   (:import [org.ejml.ops CommonOps]
            [org.ejml.data DenseMatrix64F]))
 

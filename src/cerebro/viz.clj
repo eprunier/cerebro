@@ -1,4 +1,4 @@
-(ns cerebro.matrix.viz
+(ns cerebro.viz
   (:import [org.ejml.ops MatrixVisualization]))
 
 (defn show
