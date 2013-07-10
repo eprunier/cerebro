@@ -7,62 +7,66 @@
   (:import [org.ejml.data DenseMatrix64F]))
 
 ;;
-;; Types definition
-;;
-(deftype Matrix [^DenseMatrix64F this]
-  )
-
-
-;;
 ;; core.matrix implementation
 ;;
 ;; =======================================
 ;; Mandatory protocols
 ;;
-(extend-type Matrix
+(extend-type org.ejml.data.DenseMatrix64F
   mp/PImplementation
   (implementation-key [m]
     :cerebro)
   (construct-matrix [m data]
     (c/matrix data))
   (new-vector [m length]
-    )
+    (c/zeros length 1))
   (new-matrix [m rows columns]
-    )
+    (c/zeros rows columns))
   (new-matrix-nd [m shape]
-    )
+    (c/zeros shape))
   (supports-dimensionality? [m dimensions]
     (<= dimensions 2))
 
   mp/PDimensionInfo
   (dimensionality [m]
-    )
+    2)
   (get-shape [m]
-    )
+    (c/size m))
   (is-scalar? [m]
     false)
   (is-vector? [m]
-    )
+    (c/vector? m))
   (dimension-count [m dimension-number]
-    )
+    (condp = dimension-number
+      0 (c/num-rows m)
+      1 (c/num-cols m)
+      (throw (IllegalArgumentException. "Matrix only has dimensions 0 and 1"))))
 
   mp/PIndexedAccess
   (get-1d [m i]
-    )
+    (c/row i m))
   (get-2d [m row column]
-    )
+    (c/get m row column))
   (get-nd [m indexes]
-    )
+    (let [dim (count indexes)]
+      (cond (== dim 1) (mp/get-1d m (first indexes))
+            (== dim 2) (mp/get-2d m (first indexes) (second indexes))
+            :else (throw (UnsupportedOperationException.
+                          "Only 2-d get on matrices is supported.")))))
 
   mp/PIndexedSetting
-  (set-1d [m i x]
-    )
-  (set-2d [m row column x]
-    )
-  (set-nd [m indexes x]
-    )
+  (set-1d [m row v]
+    (c/set m row 0 v))
+  (set-2d [m row column v]
+    (c/set m row column v))
+  (set-nd [m indexes v]
+    (let [dim (count indexes)]
+      (cond (== dim 1) (mp/set-1d m (first indexes) v)
+            (== dim 2) (mp/set-2d m (first indexes) (second indexes) v)
+            :else (throw (UnsupportedOperationException.
+                          "Only 1d or 2d set on matrices is supported.")))))
   (is-mutable? [m]
-    )
+    true)
 
   mp/PMatrixCloning
   (clone [m]
@@ -72,3 +76,9 @@
 ;; =======================================
 ;; Optional protocols
 ;;
+
+
+;;
+;; Register implementation
+;;
+(imp/register-implementation (c/zeros 2 2))

@@ -26,16 +26,16 @@
 (defn matrix
   "Creates a new matrix.
 
-   Creates a 2 x 3 matrix :
-   (matrix [[1 2 3] [4 5 6]])
-
-   Creates the same 2 x 3 matrix :
-   (matrix [1 2 3 4 5 6] 2)"
+   Single row matrix exemple: (matrix [1 2 3 4 5 6])
+   2 x 3 matrix exemple:      (matrix [[1 2 3] [4 5 6]])
+   same 2 x 3 matrix exemple: (matrix [1 2 3 4 5 6] 2)"
   ([data]
-     (->> data
-          (map double-array)
-          into-array
-          DenseMatrix64F.))
+     (if (number? (first data))
+       (DenseMatrix64F. 1 (count data) true (double-array data))
+       (->> data
+            (map double-array)
+            into-array
+            DenseMatrix64F.)))
   ([data num-rows]
      (let [cols (/ (count data) num-rows)]
        (DenseMatrix64F. num-rows cols true (double-array data)))))

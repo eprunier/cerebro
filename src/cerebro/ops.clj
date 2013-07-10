@@ -14,7 +14,7 @@
     (CommonOps/transpose R)
     R))
 
-(defn minus
+(defn negate
   "Changes the sign of all elements."
   [M]
   (let [R (.copy M)]
