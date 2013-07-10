@@ -11,11 +11,9 @@
 </pre></div><div class="public" id="var-load-matrix"><h3>load-matrix</h3><div class="usage"><code>(load-matrix file)</code></div><pre class="doc">Load a matrix from a binary file.
 </pre></div><div class="public" id="var-matrix"><h3>matrix</h3><div class="usage"><code>(matrix data)</code><code>(matrix data num-rows)</code></div><pre class="doc">Creates a new matrix.
 
-Creates a 2 x 3 matrix :
-(matrix [[1 2 3] [4 5 6]])
-
-Creates the same 2 x 3 matrix :
-(matrix [1 2 3 4 5 6] 2)</pre></div><div class="public" id="var-matrix-%3Eclj"><h3>matrix-&gt;clj</h3><div class="usage"><code>(matrix-&gt;clj M)</code></div><pre class="doc">Converts a matrix to a clojure vector.
+Single row matrix exemple: (matrix [1 2 3 4 5 6])
+2 x 3 matrix exemple:      (matrix [[1 2 3] [4 5 6]])
+same 2 x 3 matrix exemple: (matrix [1 2 3 4 5 6] 2)</pre></div><div class="public" id="var-matrix-%3Eclj"><h3>matrix-&gt;clj</h3><div class="usage"><code>(matrix-&gt;clj M)</code></div><pre class="doc">Converts a matrix to a clojure vector.
 </pre></div><div class="public" id="var-matrix%3F"><h3>matrix?</h3><div class="usage"><code>(matrix? M)</code></div><pre class="doc">Tests if M is a matrix.
 </pre></div><div class="public" id="var-merge-rows"><h3>merge-rows</h3><div class="usage"><code>(merge-rows &amp; rows)</code></div><pre class="doc">Merge row-vectors into a single matrix.
 </pre></div><div class="public" id="var-num-cols"><h3>num-cols</h3><div class="usage"><code>(num-cols M)</code></div><pre class="doc">Returns the number of columns of the matrix.
