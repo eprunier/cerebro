@@ -26,9 +26,9 @@
 (defn matrix
   "Creates a new matrix.
 
-   Single row matrix exemple: (matrix [1 2 3 4 5 6])
-   2 x 3 matrix exemple:      (matrix [[1 2 3] [4 5 6]])
-   same 2 x 3 matrix exemple: (matrix [1 2 3 4 5 6] 2)"
+   Single row matrix exemple:     (matrix [1 2 3 4 5 6])
+   A 2 x 3 matrix exemple:        (matrix [[1 2 3] [4 5 6]])
+   The same 2 x 3 matrix exemple: (matrix [1 2 3 4 5 6] 2)"
   ([data]
      (if (number? (first data))
        (DenseMatrix64F. 1 (count data) true (double-array data))

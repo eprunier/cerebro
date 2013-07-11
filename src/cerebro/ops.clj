@@ -71,7 +71,7 @@
       R)))
 
 (defn emul
-  "Multiplies element wise matrix A by matrix B."
+  "Multiplies element-wise matrix A by matrix B."
   [A B]
   (let [R (m/zeros (m/size A))]
     (CommonOps/elementMult A B R)
@@ -85,7 +85,7 @@
     R))
 
 (defn ediv
-  "Divides element wise matrix A by matrix B."
+  "Divides element-wise matrix A by matrix B."
   [A B]
   (let [R (m/zeros (m/size A))]
     (if (and (> (m/num-rows A) 1)
