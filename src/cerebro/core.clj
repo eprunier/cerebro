@@ -30,12 +30,14 @@
    A 2 x 3 matrix exemple:        (matrix [[1 2 3] [4 5 6]])
    The same 2 x 3 matrix exemple: (matrix [1 2 3 4 5 6] 2)"
   ([data]
-     (if (number? (first data))
-       (DenseMatrix64F. 1 (count data) true (double-array data))
-       (->> data
-            (map double-array)
-            into-array
-            DenseMatrix64F.)))
+     (if (coll? data)
+       (if (number? (first data))
+         (DenseMatrix64F. 1 (count data) true (double-array data))
+         (->> data
+              (map double-array)
+              into-array
+              DenseMatrix64F.))
+       (matrix [data])))
   ([data num-rows]
      (let [cols (/ (count data) num-rows)]
        (DenseMatrix64F. num-rows cols true (double-array data)))))

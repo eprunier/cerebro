@@ -1,4 +1,4 @@
-(ns cerebro.matrix
+(ns cerebro.matrix-api
   "Namespace for clojure.core.matrix implementation"
   (:require [clojure.core.matrix :as m]
             [clojure.core.matrix.protocols :as mp]
