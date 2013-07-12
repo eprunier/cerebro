@@ -6,4 +6,5 @@
   :dependencies [[org.clojure/clojure "1.5.1"]
                  [org.clojure/data.csv "0.1.2"]
                  [net.mikera/core.matrix "0.7.2"]
-                 [com.googlecode.efficient-java-matrix-library/ejml "0.22"]])
+                 [com.googlecode.efficient-java-matrix-library/ejml "0.22"]]
+  :codox {:exclude "cerebro.matrix-api"})
