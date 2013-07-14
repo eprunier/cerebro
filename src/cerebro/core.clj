@@ -112,12 +112,6 @@
   [M]
   (MatrixFeatures/isVector M))
 
-(defn size
-  "Returns the number of rows and columns in matrix M."
-  [M]
-  [(.getNumRows M)
-   (.getNumCols M)])
-
 (defn num-rows
   "Returns the number of rows of the matrix."
   [M]
@@ -127,6 +121,29 @@
   "Returns the number of columns of the matrix."
   [M]
   (.getNumCols M))
+
+(defn row-vector?
+  "Tests if M is a row vector."
+  [M]
+  (and (vector? M)
+       (= 1 (num-rows M))))
+
+(defn col-vector?
+  "Tests if M is a col vector."
+  [M]
+  (and (vector? M)
+       (= 1 (num-cols M))))
+
+(defn size
+  "Returns the number of rows and columns in matrix M."
+  [M]
+  (let [rows (.getNumRows M)
+        cols (.getNumCols M)]
+    (if (vector? M)
+      (if (row-vector? M)
+        [cols]
+        [rows])
+      [rows cols])))
 
 ;;
 ;; Content access

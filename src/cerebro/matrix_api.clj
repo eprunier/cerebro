@@ -9,10 +9,10 @@
 ;;
 ;; core.matrix implementation
 ;;
-;; =======================================
-;; Mandatory protocols
-;;
 (extend-type org.ejml.data.DenseMatrix64F
+  ;;
+  ;; Mandatory protocols
+  ;;
   mp/PImplementation
   (implementation-key [m]
     :cerebro)
@@ -44,7 +44,9 @@
 
   mp/PIndexedAccess
   (get-1d [m i]
-    (c/row i m))
+    (if (c/row-vector? m)
+      (c/get m 0 i)
+      (c/get m i 0)))
   (get-2d [m row column]
     (c/get m row column))
   (get-nd [m indexes]
@@ -70,12 +72,16 @@
 
   mp/PMatrixCloning
   (clone [m]
-    (c/clone m)))
+    (c/clone m))
 
-;; 
-;; =======================================
-;; Optional protocols
-;;
+  ;; 
+  ;; =======================================
+  ;; Optional protocols
+  ;;
+  mp/PCoercion
+  (coerce-param [m param]
+    (if (instance? clojure.lang.PersistentVector param)
+        (c/matrix param))))
 
 
 ;;

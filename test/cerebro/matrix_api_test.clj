@@ -16,8 +16,8 @@
     #_(comp/vector-tests-1d test-matrix)
     #_(comp/test-array-interop test-matrix)
     #_(comp/test-numeric-functions test-matrix)
-    #_(comp/test-dimensionality test-matrix)
-    #_(comp/test-new-matrices test-matrix)))
+    (comp/test-dimensionality test-matrix)
+    (comp/test-new-matrices test-matrix)))
 
 
 #_(deftest compliance-test
