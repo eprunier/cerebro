@@ -178,7 +178,7 @@
                          cols (m/matrix->clj values))
                     vec
                     m/row-vector)]
-    [values, indexes]))
+    [values indexes]))
 
 (defn min
   "Find the minimum value and its index in each columns and returns 
