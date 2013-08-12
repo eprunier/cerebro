@@ -8,8 +8,9 @@
            [org.ejml.ops CommonOps MatrixIO MatrixVisualization MatrixFeatures]))
 
 ;;
-;; Matrix IO
+;; ## Matrix IO
 ;;
+
 (defn save-matrix
   "Save a matrix to a binary file."
   [M file]
@@ -21,14 +22,18 @@
   (MatrixIO/loadBin file))
 
 ;;
-;; Matrix creation
+;; ## Matrix creation
 ;;
-(defn matrix
-  "Creates a new matrix.
 
-   Single row matrix exemple:     (matrix [1 2 3 4 5 6])
-   A 2 x 3 matrix exemple:        (matrix [[1 2 3] [4 5 6]])
-   The same 2 x 3 matrix exemple: (matrix [1 2 3 4 5 6] 2)"
+(defn matrix
+  "This is the core function to create matrices.
+   It can be used to create row/column vectors and 2-dimensionnal matrices.
+
+   Exemples :
+
+      (matrix [1 2 3 4 5 6])      => row vector
+      (matrix [[1 2 3] [4 5 6]])  => 2x3 matrix
+      (matrix [1 2 3 4 5 6] 2)    => 2x3 matrix"
   ([data]
      (if (coll? data)
        (if (number? (first data))
@@ -43,12 +48,12 @@
        (DenseMatrix64F. num-rows cols true (double-array data)))))
 
 (defn row-vector
-  "Creates a row vector."
+  "Shortcut for creating row vectors."
   [data]
   (matrix data 1))
 
 (defn col-vector
-  "Creates a column vector."
+  "Shortcut for creating column vectors."
   [data]
   (matrix data (count data)))
 
@@ -87,8 +92,9 @@
   (CommonOps/extract M start-row end-row start-col end-col))
 
 ;;
-;; Convertion functions
+;; ## Convertion functions
 ;;
+
 (defn matrix->clj
   "Converts a matrix to a clojure vector."
   [M]
@@ -100,8 +106,9 @@
   (.setData M (double-array v)))
 
 ;;
-;; Informations on matrix
+;; ## Informations on matrix
 ;;
+
 (defn matrix?
   "Tests if M is a matrix."
   [M]
@@ -146,8 +153,9 @@
       [rows cols])))
 
 ;;
-;; Content access
+;; ## Content access
 ;;
+
 (defn row
   "Returns the specified row."
   [i M]

@@ -7,8 +7,9 @@
   (:import [org.ejml.data DenseMatrix64F]))
 
 ;;
-;; core.matrix implementation
+;; ## Implementation of core.matrix protocols
 ;;
+
 (extend-type org.ejml.data.DenseMatrix64F
   ;;
   ;; Mandatory protocols
@@ -85,6 +86,7 @@
 
 
 ;;
-;; Register implementation
+;; ## Implementation registration
 ;;
+
 (imp/register-implementation (c/zeros 2 2))

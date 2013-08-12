@@ -1,12 +1,10 @@
 (ns cerebro.ops
+  "This namespace exposes usefull matrix operations."
   (:refer-clojure :exclude [max min])
   (:require [cerebro.core :as m])
   (:import [org.ejml.ops CommonOps]
            [org.ejml.data DenseMatrix64F]))
 
-;;
-;; Matrix operations
-;;
 (defn transpose
   "Transposes the M matrix."
   [M]
@@ -144,7 +142,7 @@
   "Computes the standard deviation for each column
    and return them in a row vector.
 
-   std(M) => sqrt(1 / (n - 1) * sum((x - mean)^2))"
+      std(M) => sqrt(1 / (n - 1) * sum((x - mean)^2))"
   [M]
   (let [R (m/zeros 1 (.getNumCols M))
         nb-rows (.getNumRows M)
@@ -155,11 +153,16 @@
         sqrt)))
 
 (defn scale
-  "Scales matrix data based on standard derivation: (X - means) / std
+  "Scales matrix data based on standard derivation:
+
+     (X - means) / std
+
    and returns a clojure map containing:
+
       :X = normalized X
       :mu = means
       :sigma = standard derivation
+
    X is not modified."
   [X]
   (let [mu (mean X)
