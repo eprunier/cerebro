@@ -13,8 +13,8 @@
 
 (defn save-matrix
   "Save a matrix to a binary file."
-  [M file]
-  (MatrixIO/saveBin M file))
+  [m file]
+  (MatrixIO/saveBin m file))
 
 (defn load-matrix
   "Load a matrix from a binary file."
@@ -61,8 +61,8 @@
   "Creates a matrix with all elements set to 0."
   ([size]
      (zeros (first size) (second size)))
-  ([rows cols]
-     (DenseMatrix64F. rows cols)))
+  ([num-rows num-cols]
+     (DenseMatrix64F. num-rows num-cols)))
 
 (defn ones
   "Creates a matrix with all elements set to 1."
@@ -83,13 +83,13 @@
   (CommonOps/diag (double-array data)))
 
 (defn clone
-  "Duplicates the matrix M."
-  [M]
-  (.copy M))
+  "Duplicates the matrix."
+  [m]
+  (.copy m))
 
-(defn extract
-  [M start-row end-row start-col end-col]
-  (CommonOps/extract M start-row end-row start-col end-col))
+(defn submatrix
+  [m start-row end-row start-col end-col]
+  (CommonOps/extract m start-row end-row start-col end-col))
 
 ;;
 ;; ## Convertion functions
@@ -97,13 +97,13 @@
 
 (defn matrix->clj
   "Converts a matrix to a clojure vector."
-  [M]
-  (vec (.getData M)))
+  [m]
+  (vec (.getData m)))
 
 (defn clj->matrix
   "Replace the content of M with the clojure vector v."
-  [M v]
-  (.setData M (double-array v)))
+  [m v]
+  (.setData m (double-array v)))
 
 ;;
 ;; ## Informations on matrix
@@ -111,43 +111,43 @@
 
 (defn matrix?
   "Tests if M is a matrix."
-  [M]
-  (instance? DenseMatrix64F M))
+  [m]
+  (instance? DenseMatrix64F m))
 
 (defn vector?
   "Tests if M is a vector."
-  [M]
-  (MatrixFeatures/isVector M))
+  [m]
+  (MatrixFeatures/isVector m))
 
 (defn num-rows
   "Returns the number of rows of the matrix."
-  [M]
-  (.getNumRows M))
+  [m]
+  (.getNumRows m))
 
 (defn num-cols
   "Returns the number of columns of the matrix."
-  [M]
-  (.getNumCols M))
+  [m]
+  (.getNumCols m))
 
 (defn row-vector?
   "Tests if M is a row vector."
-  [M]
-  (and (vector? M)
-       (= 1 (num-rows M))))
+  [m]
+  (and (vector? m)
+       (= 1 (num-rows m))))
 
 (defn col-vector?
   "Tests if M is a col vector."
-  [M]
-  (and (vector? M)
-       (= 1 (num-cols M))))
+  [m]
+  (and (vector? m)
+       (= 1 (num-cols m))))
 
 (defn size
   "Returns the number of rows and columns in matrix M."
-  [M]
-  (let [rows (.getNumRows M)
-        cols (.getNumCols M)]
-    (if (vector? M)
-      (if (row-vector? M)
+  [m]
+  (let [rows (.getNumRows m)
+        cols (.getNumCols m)]
+    (if (vector? m)
+      (if (row-vector? m)
         [cols]
         [rows])
       [rows cols])))
@@ -158,60 +158,64 @@
 
 (defn row
   "Returns the specified row."
-  [i M]
-  (CommonOps/extract M i (+ 1 i) 0 (num-cols M)))
+  [m i]
+  (CommonOps/extract m i (+ 1 i) 0 (num-cols m)))
 
 (defn rows
   "Returns a vector of single row matrices representing each rows."
-  [M]
-  (->> M
+  [m]
+  (->> m
        matrix->clj
-       (partition (num-cols M))
+       (partition (num-cols m))
        (map row-vector)))
 
 (defn col
   "Returns the specified column."
-  [i M]
-  (CommonOps/extract M 0 (num-rows M) i (+ 1 i)))
+  [m i]
+  (CommonOps/extract m 0 (num-rows m) i (+ 1 i)))
 
 (defn cols
   "Returns a vector of single row matrices representing each columns."
-  [M]
-  (let [R (.copy M)]
-    (CommonOps/transpose R)
-    (rows R)))
+  [m]
+  (let [r (.copy m)]
+    (CommonOps/transpose r)
+    (rows r)))
 
 (defn set
   "Sets the value for the given row and col and returns the new matrix.
    M is not modified."
-  [M row col value]
-  (let [R (.copy M)]
-    (.set R row col value)
-    R))
+  [m row col value]
+  (let [r (.copy m)]
+    (.set r row col value)
+    r))
 
 (defn set!
   "Sets the value for the given row and col in M and returns it.
    M is modified."
-  [M row col value]
-  (.set M row col value))
+  ([m index value]
+     (if (col-vector? m)
+       (.set m index 0 value)
+       (.set m 0 index value)))
+  ([m row col value]
+     (.set m row col value)))
 
 (defn get
   "Returns an element of the matrix."
-  [M row col]
-  (.get M row col))
+  [m row col]
+  (.get m row col))
 
 (defn merge-rows
   "Merge row-vectors into a single matrix."
   [& rows]
-  (let [R (zeros (count rows) (num-cols (first rows)))]
+  (let [r (zeros (count rows) (num-cols (first rows)))]
     (->> rows
          (mapcat matrix->clj)
-         (clj->matrix R))
-    R))
+         (clj->matrix r))
+    r))
 
 (defn apply-to-rows
   "Applies the function f to each row of the matrix."
-  [M f]
-  (->> (map f (rows M))
+  [m f]
+  (->> (map f (rows m))
        (apply merge-rows)))
 

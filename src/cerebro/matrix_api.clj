@@ -2,7 +2,7 @@
   "Namespace for clojure.core.matrix implementation"
   (:require [clojure.core.matrix :as m]
             [clojure.core.matrix.protocols :as mp]
-            [clojure.core.matrix.implementations :as imp]
+            [clojure.core.matrix.implementations :as mi]
             [cerebro.core :as c])
   (:import [org.ejml.data DenseMatrix64F]))
 
@@ -12,11 +12,12 @@
 
 (extend-type org.ejml.data.DenseMatrix64F
   ;;
-  ;; Mandatory protocols
+  ;; Mandatory protocols for all implementations
   ;;
   mp/PImplementation
   (implementation-key [m]
     :cerebro)
+  (meta-info [m]) ;; TODO
   (construct-matrix [m data]
     (c/matrix data))
   (new-vector [m length]
@@ -30,7 +31,9 @@
 
   mp/PDimensionInfo
   (dimensionality [m]
-    2)
+    (if (c/vector? m)
+      1
+      2))
   (get-shape [m]
     (c/size m))
   (is-scalar? [m]
@@ -41,7 +44,7 @@
     (condp = dimension-number
       0 (c/num-rows m)
       1 (c/num-cols m)
-      (throw (IllegalArgumentException. "Matrix only has dimensions 0 and 1"))))
+      (throw (IllegalArgumentException. "Dimension-number must be 0 or 1."))))
 
   mp/PIndexedAccess
   (get-1d [m i]
@@ -55,7 +58,7 @@
       (cond (== dim 1) (mp/get-1d m (first indexes))
             (== dim 2) (mp/get-2d m (first indexes) (second indexes))
             :else (throw (UnsupportedOperationException.
-                          "Only 2-d get on matrices is supported.")))))
+                          "Only 1 or 2 dimensions matrices are supported.")))))
 
   mp/PIndexedSetting
   (set-1d [m row v]
@@ -71,22 +74,39 @@
   (is-mutable? [m]
     true)
 
+  ;;
+  ;; Mandatory protocols for mutable matrices
+  ;;
+
+  mp/PIndexedSettingMutable
+  (set-1d! [m index val]) ;; TODO
+  (set-2d! [m row col val]) ;; TODO
+  (set-nd! [m indices val]) ;; TODO
+
   mp/PMatrixCloning
   (clone [m]
     (c/clone m))
 
   ;; 
-  ;; =======================================
   ;; Optional protocols
   ;;
-  mp/PCoercion
-  (coerce-param [m param]
-    (if (instance? clojure.lang.PersistentVector param)
-        (c/matrix param))))
+  mp/PMatrixSlices
+  (get-row [m i]
+    (c/row m i))
+  (get-column [m i]
+    (c/col m i))
+  (get-major-slice [m i]
+    (mp/get-row m i))
+  (get-slice [m dimension i]
+    (condp = dimension
+      0 (mp/get-row m i)
+      1 (mp/get-column m i)
+      (throw (UnsupportedOperationException.
+              "Dimension must be 0 or 1.")))))
 
 
 ;;
 ;; ## Implementation registration
 ;;
 
-(imp/register-implementation (c/zeros 2 2))
+(mi/register-implementation (c/zeros 2 2))
