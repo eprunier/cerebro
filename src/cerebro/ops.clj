@@ -96,13 +96,14 @@
   (CommonOps/det M))
 
 (defn sum
-  "Computes the sum of all elements in the matrix M."
+  "Computes the sums of each columns and returns them in a row vector."
   [M]
-  (CommonOps/elementSum M))
+  (let [R (m/zeros 1 (m/num-cols M))]
+    (CommonOps/sumCols M R)
+    R))
 
 (defn mean
-  "Computes the mean of each column and return
-   them in a row vector."
+  "Computes the mean of each column and return them in a row vector."
   [M]
   (let [R (m/zeros 1 (.getNumCols M))
         nb-rows (.getNumRows M)]
@@ -129,17 +130,6 @@
          (m/clj->matrix T))
     T))
 
-(defn apply-to-rows
-  "Applies the function fn to each row of the matrix."
-  [M fn]
-  (let [R (m/zeros (m/size M))]
-    (->> (map fn (m/rows M))
-         vec
-         (mapcat m/matrix->clj)
-         vec
-         (m/clj->matrix R))
-    R))
-
 (defn std
   "Computes the standard deviation for each column
    and return them in a row vector.
@@ -149,6 +139,7 @@
   (let [R (m/zeros 1 (.getNumCols M))
         nb-rows (.getNumRows M)
         col-means (mean M)]
-    (-> (apply-to-rows M #(square (sub % col-means)))
-        (CommonOps/sumCols R))
-    (sqrt (scale R (/ 1 (- nb-rows 1))))))
+    (-> (m/apply-to-rows M #(square (sub % col-means)))
+        sum
+        (scale (/ 1 (- nb-rows 1)))
+        sqrt)))

@@ -135,10 +135,24 @@
   "Sets the value for the given row and col in M and returns it.
    M is modified."
   [M row col value]
-  (.set M row col value)
-  M)
+  (.set M row col value))
 
 (defn get
   "Returns an element of the matrix."
   [M row col]
   (.get M row col))
+
+(defn merge-rows
+  "Merge row-vectors into a single matrix."
+  [& rows]
+  (let [R (zeros (count rows) (num-cols (first rows)))]
+    (->> rows
+         (mapcat matrix->clj)
+         (clj->matrix R))
+    R))
+
+(defn apply-to-rows
+  "Applies the function f to each row of the matrix."
+  [M f]
+  (->> (map f (rows M))
+       (apply merge-rows)))
